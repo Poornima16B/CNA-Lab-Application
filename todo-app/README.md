@@ -1,60 +1,111 @@
 # 📋 RVCE Todo App — DevOps Lab Manual
 
-This manual contains the installation commands for all required software, followed by the minimal execution commands for DevOps Experiments 1–9 (excluding 6).
+This manual contains the installation commands for Linux, macOS, and Windows, followed by the execution commands for DevOps Experiments 1–9 (excluding 6).
 
 ---
 
-## 💻 Part 1: Software Installation Commands
-
-Run these commands on the laboratory system to install the required stack (Ubuntu/Debian environment):
+## 💻 Part 1: Multi-Platform Software Installation
 
 ### 1. Git Installation
-```bash
-sudo apt update
-sudo apt install -y git
-git --version
-```
+
+* **Linux (Ubuntu/Debian):**
+  ```bash
+  sudo apt update && sudo apt install -y git
+  ```
+* **macOS (Homebrew):**
+  ```bash
+  brew install git
+  ```
+* **Windows (Winget/PowerShell):**
+  ```powershell
+  winget install --id Git.Git -e --source winget
+  ```
+
+---
 
 ### 2. Node.js (v20 LTS) & npm Installation
-```bash
-sudo apt install -y curl
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-node --version
-npm --version
-```
 
-### 3. Docker Engine Installation
-```bash
-sudo apt update
-sudo apt install -y ca-certificates curl gnupg lsb-release
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-sudo systemctl enable docker
-sudo systemctl start docker
-```
+* **Linux (Ubuntu/Debian):**
+  ```bash
+  sudo apt install -y curl
+  curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+  sudo apt install -y nodejs
+  ```
+* **macOS (Homebrew):**
+  ```bash
+  brew install node@20
+  brew link node@20
+  ```
+* **Windows (Winget/PowerShell):**
+  ```powershell
+  winget install -e --id OpenJS.NodeJS.LTS
+  ```
 
-### 4. Jenkins Installation (using LTS repositories)
-```bash
-sudo apt install -y openjdk-17-jre
-sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
-echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt update
-sudo apt install -y jenkins
-sudo systemctl enable jenkins
-sudo systemctl start jenkins
-```
+---
 
-### 5. Ngrok Installation (for local webhook testing)
-```bash
-curl -s https://ngrok-agent.s3.amazonaws.com/files/gated/g3-luc/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-echo "deb https://ngrok-agent.s3.amazonaws.com/files/gated/g3-luc/ default main" | sudo tee /etc/apt/sources.list.d/ngrok.list
-sudo apt update
-sudo apt install ngrok
-```
+### 3. Docker Installation
+
+* **Linux (Ubuntu/Debian Engine):**
+  ```bash
+  sudo apt update
+  sudo apt install -y ca-certificates curl gnupg lsb-release
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt update
+  sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  sudo systemctl enable docker && sudo systemctl start docker
+  ```
+* **macOS (Homebrew Cask / Docker Desktop):**
+  ```bash
+  brew install --cask docker
+  ```
+* **Windows (Winget/PowerShell / Docker Desktop):**
+  ```powershell
+  winget install -e --id Docker.DockerDesktop
+  ```
+
+---
+
+### 4. Jenkins Installation
+
+* **Linux (Ubuntu/Debian LTS):**
+  ```bash
+  sudo apt install -y openjdk-17-jre
+  sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+  echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+  sudo apt update
+  sudo apt install -y jenkins
+  sudo systemctl enable jenkins && sudo systemctl start jenkins
+  ```
+* **macOS (Homebrew LTS):**
+  ```bash
+  brew install jenkins-lts
+  brew services start jenkins-lts
+  ```
+* **Windows (Winget/PowerShell):**
+  ```powershell
+  winget install -e --id Jenkins.Jenkins
+  ```
+
+---
+
+### 5. Ngrok Installation
+
+* **Linux (Ubuntu/Debian):**
+  ```bash
+  curl -s https://ngrok-agent.s3.amazonaws.com/files/gated/g3-luc/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+  echo "deb https://ngrok-agent.s3.amazonaws.com/files/gated/g3-luc/ default main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+  sudo apt update && sudo apt install ngrok
+  ```
+* **macOS (Homebrew):**
+  ```bash
+  brew install ngrok/ngrok/ngrok
+  ```
+* **Windows (Winget/PowerShell):**
+  ```powershell
+  winget install -e --id ngrok.ngrok
+  ```
 
 ---
 
@@ -135,7 +186,7 @@ docker compose down
 
 ### Experiment 4: CI/CD Pipeline Automation with Jenkins
 
-1. Go to Jenkins UI: `http://localhost:8080`
+1. Go to Jenkins UI: `http://localhost:8080` (or `http://localhost:8080` if run locally).
 2. Create **New Item** -> Name: `rvce-todo-app` -> Select **Pipeline**.
 3. Under **Pipeline SCM**:
    - SCM: **Git**
