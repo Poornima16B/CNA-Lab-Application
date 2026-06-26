@@ -160,26 +160,31 @@ docker compose down
 ---
 
 ### Experiment 4: CI/CD Pipeline Automation with Jenkins
-1. Open **http://localhost:8080** -> click **New Item** -> enter name -> select **Pipeline** -> **OK**.
-2. Scroll to **Pipeline** section:
-   - Definition: **Pipeline script from SCM**
-   - SCM: **Git**
-   - Repository URL: `https://github.com/Dheeraj-02NK/CNA-Lab-Application.git`
-   - Branch: `*/main`
-   - Script Path: `todo-app/Jenkinsfile`
-3. Click **Save** -> **Build Now**.
-4. Check **Console Output** of the run to verify success.
+
+**Procedure**
+1. Open Jenkins: `http://localhost:8080`
+2. Click **New Item**.
+3. Enter a project name (Example: `CNA Lab Apps`).
+4. Select **Pipeline**.
+5. Under Pipeline configuration:
+   - Definition → **Pipeline script from SCM**
+   - SCM → **Git**
+   - Repository URL → `https://github.com/Dheeraj-02NK/CNA-Lab-Application.git`
+   - Branch → `*/main`
+   - Script Path → `todo-app/Jenkinsfile`
+6. Click **Save**.
+7. Click **Build Now**.
+8. Open **Console Output** to verify the laboratory demonstration pipeline.
 
 ---
 
 ### Experiment 5: Cloud Deployment on Azure App Service
-1. Create a Linux **Web App** with Runtime Stack **Node 20 LTS** in the Azure Portal.
-2. In **Deployment Center**, select **GitHub**, authorize, and connect your repository/branch.
-3. In Web App **Configuration** -> Add App Setting: `PORT` = `3000`.
-4. In General Settings set **Startup Command**:
-   ```bash
-   npm run build && npm start
-   ```
+
+**Procedure**
+1. Open the [Azure Dashboard](https://portal.azure.com).
+2. Create a new Virtual Machine (VM) to demonstrate cloud infrastructure provisioning.
+3. Wait for the VM allocation to complete.
+4. Delete the Virtual Machine (VM) to avoid unnecessary billing and demonstrate resource de-allocation.
 
 ---
 
