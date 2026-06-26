@@ -1,29 +1,117 @@
 # 📋 RVCE Todo App — DevOps Lab Manual
 
-This manual contains the instructions to run all required services (Jenkins, Ngrok, etc.) via Docker, followed by the execution commands for DevOps Experiments 1–9 (excluding 6).
+This manual contains the installation commands for Linux, macOS, and Windows, followed by the execution commands for DevOps Experiments 1–9 (excluding 6).
 
 ---
 
-## 💻 Part 1: Service Configuration (Docker & Docker Compose)
+## 💻 Part 1: Multi-Platform Software Installation
 
-Since Git, Node.js, and Docker are already installed on the laboratory systems, you can spin up Jenkins and Ngrok directly as Docker containers to avoid installation privileges.
+### 1. Git Installation
 
-### 1. Start Jenkins LTS Container
-Run this command from the `todo-app` folder:
-```bash
-docker compose -f docker-compose.devops.yml up -d
-```
-- **Jenkins Access:** http://localhost:8080
-- **Admin Password Retrieval:**
+* **Linux (Ubuntu/Debian):**
   ```bash
-  docker logs jenkins-lab
+  sudo apt update && sudo apt install -y git
+  ```
+* **macOS (Homebrew):**
+  ```bash
+  brew install git
+  ```
+* **Windows (Winget/PowerShell):**
+  ```powershell
+  winget install --id Git.Git -e --source winget
   ```
 
-### 2. Start Ngrok Container
-```bash
-# Add your authtoken and run
-docker run -d --name ngrok-agent --net=host -e NGROK_AUTHTOKEN=<YOUR_NGROK_AUTHTOKEN> ngrok/ngrok http 8080
-```
+---
+
+### 2. Node.js (v20 LTS) & npm Installation
+
+* **Linux (Ubuntu/Debian):**
+  ```bash
+  sudo apt install -y curl
+  curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+  sudo apt install -y nodejs
+  ```
+* **macOS (Homebrew):**
+  ```bash
+  brew install node@20
+  brew link node@20
+  ```
+* **Windows (Winget/PowerShell):**
+  ```powershell
+  winget install -e --id OpenJS.NodeJS.LTS
+  ```
+
+---
+
+### 3. Docker Installation
+
+* **Linux (Ubuntu/Debian Engine):**
+  ```bash
+  sudo apt update
+  sudo apt install -y ca-certificates curl gnupg lsb-release
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt update
+  sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  sudo systemctl enable docker && sudo systemctl start docker
+  ```
+* **macOS (Homebrew Cask / Docker Desktop):**
+  ```bash
+  brew install --cask docker
+  ```
+* **Windows (Winget/PowerShell / Docker Desktop):**
+  ```powershell
+  winget install -e --id Docker.DockerDesktop
+  ```
+
+---
+
+### 4. Jenkins Installation
+
+* **Linux (Ubuntu/Debian LTS):**
+  ```bash
+  # Jenkins requires Java 21 LTS
+  sudo apt update && sudo apt install -y openjdk-21-jre openjdk-21-jdk
+  
+  # Import Jenkins repository GPG key
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5BA31D57EF5975CA 7198F4B714ABFC68
+  
+  # Add the Jenkins Debian package repository
+  echo "deb https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+  
+  # Install and start Jenkins
+  sudo apt update && sudo apt install -y jenkins
+  sudo systemctl enable jenkins && sudo systemctl start jenkins
+  ```
+* **macOS (Homebrew LTS):**
+  ```bash
+  brew install jenkins-lts
+  brew services start jenkins-lts
+  ```
+* **Windows (Winget/PowerShell):**
+  ```powershell
+  winget install -e --id Jenkins.Jenkins
+  ```
+
+---
+
+### 5. Ngrok Installation
+
+* **Linux (Ubuntu/Debian):**
+  ```bash
+  curl -s https://ngrok-agent.s3.amazonaws.com/files/gated/g3-luc/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+  echo "deb https://ngrok-agent.s3.amazonaws.com/files/gated/g3-luc/ default main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+  sudo apt update && sudo apt install ngrok
+  ```
+* **macOS (Homebrew):**
+  ```bash
+  brew install ngrok/ngrok/ngrok
+  ```
+* **Windows (Winget/PowerShell):**
+  ```powershell
+  winget install -e --id ngrok.ngrok
+  ```
 
 ---
 
@@ -104,8 +192,10 @@ docker compose down
 
 ### Experiment 4: CI/CD Pipeline Automation with Jenkins
 
-1. Start Jenkins container: `docker compose -f docker-compose.devops.yml up -d`
-2. Go to Jenkins UI: `http://localhost:8080`.
+1. Go to Jenkins UI: `http://localhost:8080`
+2. Retrieve initial admin password using:
+   - Linux: `sudo cat /var/lib/jenkins/secrets/initialAdminPassword`
+   - macOS: `cat ~/.jenkins/secrets/initialAdminPassword`
 3. Create **New Item** -> Name: `rvce-todo-app` -> Select **Pipeline**.
 4. Under **Pipeline SCM**:
    - SCM: **Git**
@@ -169,9 +259,9 @@ cd ../client && npm audit
 
 ### Experiment 9: GitHub Webhooks for Automated Jenkins Triggering
 
-1. Start Ngrok container:
+1. Start Ngrok tunnel on your local machine:
    ```bash
-   docker run -d --name ngrok-agent --net=host -e NGROK_AUTHTOKEN=<YOUR_NGROK_AUTHTOKEN> ngrok/ngrok http 8080
+   ngrok http 8080
    ```
 2. Go to GitHub repo -> **Settings** -> **Webhooks** -> **Add Webhook**.
 3. Set Payload URL to: `https://<ngrok-url-subdomain>/github-webhook/`
