@@ -82,7 +82,7 @@ git init
 
 # 2. Configure developer identity
 git config --local user.name "Your Name"
-git config --local user.email "your.email@rvce.edu.in"
+git config --local user.email "Your Email"
 
 # 3. Check status of untracked files
 git status
