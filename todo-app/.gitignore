@@ -44,3 +44,4 @@ coverage/
 
 # ── Docker ───────────────────────────────────────────────
 .dockerignore
+*.dbsqlite
