@@ -1,129 +1,69 @@
 # 📋 RVCE Todo App — DevOps Lab Manual
 
-This manual contains the installation commands for Linux, macOS, and Windows, followed by the execution commands for DevOps Experiments 1–9 (excluding 6).
+This manual contains setup steps to run the application and Jenkins using a single Docker Compose command, followed by execution commands for DevOps Experiments 1–9 (excluding 6).
 
 ---
 
-## 💻 Part 1: Multi-Platform Software Installation
+## 💻 Part 1: Service Configurations (Docker & Docker Compose)
 
-### 1. Git Installation
+You can launch both the **Todo Application** and **Jenkins CI/CD Server** simultaneously using Docker Compose.
 
-* **Linux (Ubuntu/Debian):**
-  ```bash
-  sudo apt update && sudo apt install -y git
-  ```
-* **macOS (Homebrew):**
-  ```bash
-  brew install git
-  ```
-* **Windows (Winget/PowerShell):**
-  ```powershell
-  winget install --id Git.Git -e --source winget
-  ```
+### 1. Launch Services
+Run this command from the `todo-app` folder:
+```bash
+docker compose up -d
+```
 
----
+| Service | Access URL |
+|---|---|
+| **Todo App** | http://localhost:3000 |
+| **Jenkins GUI** | http://localhost:8080 |
 
-### 2. Node.js (v20 LTS) & npm Installation
-
-* **Linux (Ubuntu/Debian):**
-  ```bash
-  sudo apt install -y curl
-  curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-  sudo apt install -y nodejs
-  ```
-* **macOS (Homebrew):**
-  ```bash
-  brew install node@20
-  brew link node@20
-  ```
-* **Windows (Winget/PowerShell):**
-  ```powershell
-  winget install -e --id OpenJS.NodeJS.LTS
-  ```
+### 2. Stop Services
+```bash
+docker compose down
+```
 
 ---
 
-### 3. Docker Installation
+## ⚙️ Part 2: Jenkins GUI Setup Guide
 
-* **Linux (Ubuntu/Debian Engine):**
-  ```bash
-  sudo apt update
-  sudo apt install -y ca-certificates curl gnupg lsb-release
-  sudo mkdir -p /etc/apt/keyrings
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  sudo apt update
-  sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-  sudo systemctl enable docker && sudo systemctl start docker
-  ```
-* **macOS (Homebrew Cask / Docker Desktop):**
-  ```bash
-  brew install --cask docker
-  ```
-* **Windows (Winget/PowerShell / Docker Desktop):**
-  ```powershell
-  winget install -e --id Docker.DockerDesktop
-  ```
+Follow these steps to configure Jenkins through the web interface after running `docker compose up -d`:
 
----
+### 1. Retrieve Administrator Password
+To unlock the Jenkins UI, read the secret token generated during startup:
+```bash
+docker logs jenkins-lab
+```
+*(Copy the 32-character alphanumeric code printed in the logs).*
 
-### 4. Jenkins Installation
+### 2. Unlock Jenkins
+1. Open **http://localhost:8080** in your browser.
+2. Paste the copied administrator password into the **Administrator password** field.
+3. Click **Continue**.
 
-* **Linux (Ubuntu/Debian LTS):**
-  ```bash
-  # Jenkins requires Java 21 LTS
-  sudo apt update && sudo apt install -y openjdk-21-jre openjdk-21-jdk
-  
-  # Import Jenkins repository GPG key
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5BA31D57EF5975CA 7198F4B714ABFC68
-  
-  # Add the Jenkins Debian package repository
-  echo "deb https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
-  
-  # Install and start Jenkins
-  sudo apt update && sudo apt install -y jenkins
-  sudo systemctl enable jenkins && sudo systemctl start jenkins
-  ```
-* **macOS (Homebrew LTS):**
-  ```bash
-  brew install jenkins-lts
-  brew services start jenkins-lts
-  ```
-* **Windows (Winget/PowerShell):**
-  ```powershell
-  winget install -e --id Jenkins.Jenkins
-  ```
+### 3. Install Recommended Plugins
+1. On the customization page, click **Install suggested plugins**.
+2. Wait for the plugins (Git, Pipeline, SSH, etc.) to complete installation.
+
+### 4. Create Admin Account
+1. Fill in the **Create First Admin User** form:
+   - Username: `admin`
+   - Password: `password` (or custom)
+   - Full Name: `RVCE Admin`
+2. Click **Save and Continue**, then click **Start using Jenkins**. You will be redirected to the main dashboard.
 
 ---
 
-### 5. Ngrok Installation
+## 🧪 Part 3: Experiment Manual & Minimal Execution
 
-* **Linux (Ubuntu/Debian):**
-  ```bash
-  curl -s https://ngrok-agent.s3.amazonaws.com/files/gated/g3-luc/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-  echo "deb https://ngrok-agent.s3.amazonaws.com/files/gated/g3-luc/ default main" | sudo tee /etc/apt/sources.list.d/ngrok.list
-  sudo apt update && sudo apt install ngrok
-  ```
-* **macOS (Homebrew):**
-  ```bash
-  brew install ngrok/ngrok/ngrok
-  ```
-* **Windows (Winget/PowerShell):**
-  ```powershell
-  winget install -e --id ngrok.ngrok
-  ```
-
----
-
-## 🧪 Part 2: Experiment Manual & Minimal Execution
-
-### Project Setup
+### Project Local Setup
 ```bash
 # Clone and enter project folder
 git clone https://github.com/Dheeraj-02NK/CNA-Lab-Application.git
 cd CNA-Lab-Application/todo-app
 
-# Setup local configurations
+# Setup configurations
 cp .env.example server/.env
 cp .env.example client/.env
 
@@ -192,17 +132,16 @@ docker compose down
 
 ### Experiment 4: CI/CD Pipeline Automation with Jenkins
 
-1. Go to Jenkins UI: `http://localhost:8080`
-2. Retrieve initial admin password using:
-   - Linux: `sudo cat /var/lib/jenkins/secrets/initialAdminPassword`
-   - macOS: `cat ~/.jenkins/secrets/initialAdminPassword`
-3. Create **New Item** -> Name: `rvce-todo-app` -> Select **Pipeline**.
-4. Under **Pipeline SCM**:
+1. Go to Jenkins UI: **http://localhost:8080**
+2. Click **New Item** -> Name: `rvce-todo-app` -> Select **Pipeline** -> Click **OK**.
+3. Scroll to **Pipeline** section and select:
+   - Definition: **Pipeline script from SCM**
    - SCM: **Git**
    - Repository URL: `https://github.com/Dheeraj-02NK/CNA-Lab-Application.git`
-   - Branch: `*/main`
+   - Branch Specifier: `*/main`
    - Script Path: `todo-app/Jenkinsfile`
-5. Click **Save** -> **Build Now**.
+4. Click **Save**.
+5. Click **Build Now** in the left menu, then click the build number to view progress under **Console Output**.
 
 ---
 

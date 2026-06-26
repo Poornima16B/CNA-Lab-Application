@@ -1,49 +1,55 @@
 # ═══════════════════════════════════════════════════════════════
-#  RVCE Todo App — Docker Compose Configuration
+#  RVCE Todo App & Jenkins — Docker Compose Configuration
 # ═══════════════════════════════════════════════════════════════
 #
 #  Usage:
-#    docker compose up -d        # Start in background
-#    docker compose down         # Stop and remove containers
-#    docker compose up --build   # Rebuild and start
-#    docker compose logs -f      # View live logs
+#    docker compose up -d        # Start App and Jenkins
+#    docker compose down         # Stop all services
 #
 # ═══════════════════════════════════════════════════════════════
 
 version: "3.8"
 
 services:
-  # ── Main Application Service ──────────────────────────────
+  # ── Todo Application ──────────────────────────────────────
   todo-app:
-    # Build from the Dockerfile in the current directory
     build:
       context: .
       dockerfile: Dockerfile
-
-    # Container name for easy identification
     container_name: rvce-todo-app
-
-    # Map host port 3000 → container port 3000
     ports:
       - "3000:3000"
-
-    # Load environment variables from .env file
-    # Falls back to .env.example if .env doesn't exist
     env_file:
       - .env.example
-
-    # Override environment variables directly
     environment:
       - NODE_ENV=production
       - PORT=3000
-
-    # Restart policy: restart unless manually stopped
     restart: unless-stopped
-
-    # Health check: verify the app responds on /api/health
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
+    networks:
+      - todo-network
+
+  # ── Jenkins CI/CD Server ──────────────────────────────────
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins-lab
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+    restart: unless-stopped
+    networks:
+      - todo-network
+
+networks:
+  todo-network:
+    driver: bridge
+
+volumes:
+  jenkins-data:
