@@ -40,11 +40,11 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo '📦 Installing server dependencies...'
-                dir('server') {
+                dir('todo-app/server') {
                     sh 'npm install'
                 }
                 echo '📦 Installing client dependencies...'
-                dir('client') {
+                dir('todo-app/client') {
                     sh 'npm install'
                 }
             }
@@ -55,7 +55,7 @@ pipeline {
         stage('Build Application') {
             steps {
                 echo '🔨 Building React frontend...'
-                dir('client') {
+                dir('todo-app/client') {
                     sh 'npm run build'
                 }
                 echo '✅ Frontend build completed!'
@@ -67,8 +67,8 @@ pipeline {
         stage('Verify Build') {
             steps {
                 echo '🔍 Verifying build output...'
-                sh 'ls -la client/dist/'
-                sh 'test -f client/dist/index.html && echo "✅ index.html found" || exit 1'
+                sh 'ls -la todo-app/client/dist/'
+                sh 'test -f todo-app/client/dist/index.html && echo "✅ index.html found" || exit 1'
                 echo '✅ Build verification passed!'
             }
         }
@@ -84,8 +84,10 @@ pipeline {
             }
             steps {
                 echo '🐳 Building Docker image...'
-                sh "docker build -t ${APP_NAME}:${DOCKER_TAG} ."
-                sh "docker tag ${APP_NAME}:${DOCKER_TAG} ${APP_NAME}:latest"
+                dir('todo-app') {
+                    sh "docker build -t ${APP_NAME}:${DOCKER_TAG} ."
+                    sh "docker tag ${APP_NAME}:${DOCKER_TAG} ${APP_NAME}:latest"
+                }
                 echo "✅ Docker image built: ${APP_NAME}:${DOCKER_TAG}"
             }
         }
