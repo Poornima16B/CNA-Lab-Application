@@ -42,32 +42,28 @@ docker logs jenkins-lab
 2. Paste the copied administrator password into the **Administrator password** field.
 3. Click **Continue**.
 
-### 3. Install Recommended Plugins
-1. On the customization page, click **Install suggested plugins**.
-2. Wait for the plugins (Git, Pipeline, SSH, etc.) to complete installation.
-
 ### 4. Create Admin Account
-1. Fill in the **Create First Admin User** form:
-   - Username: `admin`
-   - Password: `password` (or custom)
-   - Full Name: `RVCE Admin`
-2. Click **Save and Continue**, then click **Start using Jenkins**. You will be redirected to the main dashboard.
+1. On the customization page, click **Install suggested plugins**.
+2. Create your admin profile once installation finishes.
 
 ---
 
 ## 🧪 Part 3: Experiment Manual & Minimal Execution
 
-### Project Local Setup
+### Project Setup
+To begin the lab, clone the project and configure dependencies:
 ```bash
-# Clone and enter project folder
+# 1. Clone repository
 git clone https://github.com/Dheeraj-02NK/CNA-Lab-Application.git
+
+# 2. Go to project directory
 cd CNA-Lab-Application/todo-app
 
-# Setup configurations
+# 3. Setup configuration files
 cp .env.example server/.env
 cp .env.example client/.env
 
-# Install project dependencies
+# 4. Install all server and client dependencies
 npm install
 ```
 
@@ -75,17 +71,29 @@ npm install
 
 ### Experiment 1: Version Control with Git
 
+> 💡 **Note for Students:** Since you cloned this project from GitHub, it is already a Git repository. To practice `git init` from scratch for this experiment, delete the existing configuration folder:
+> ```bash
+> rm -rf .git
+> ```
+
 ```bash
 # 1. Initialize local repository
 git init
 
-# 2. Stage all modifications
+# 2. Configure developer identity
+git config --local user.name "Your Name"
+git config --local user.email "your.email@rvce.edu.in"
+
+# 3. Check status of untracked files
+git status
+
+# 4. Stage all files for commit
 git add .
 
-# 3. Commit staged updates to local timeline
-git commit -m "feat: setup CNA laboratory todo application"
+# 5. Commit the files to local history
+git commit -m "feat: initial commit of RVCE Todo App"
 
-# 4. View local commits list
+# 6. View the commit log
 git log --oneline
 ```
 
@@ -93,17 +101,19 @@ git log --oneline
 
 ### Experiment 2: Collaborative Development with GitHub
 
+> 💡 **Note for Students:** Replace the URL below with your own personal GitHub repository URL.
+
 ```bash
-# 1. Set default branch to main
+# 1. Create main branch
 git branch -M main
 
-# 2. Add remote origin mapping
-git remote add origin https://github.com/Dheeraj-02NK/CNA-Lab-Application.git
+# 2. Add remote origin link
+git remote add origin https://github.com/<your-github-username>/CNA-Lab-Application.git
 
-# 3. Push local changes to GitHub
+# 3. Push local changes to your remote repository
 git push -u origin main
 
-# 4. Pull changes from remote
+# 4. Pull changes from remote to verify sync
 git pull origin main
 ```
 
