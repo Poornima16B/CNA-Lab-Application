@@ -1,170 +1,182 @@
 # 📋 RVCE Todo App — DevOps Lab Manual
 
-This manual contains setup steps to run the application and Jenkins using a single Docker Compose command, followed by execution commands for DevOps Experiments 1–9 (excluding 6).
+This manual contains the absolute minimal commands required to execute DevOps Experiments 1–9 (excluding 6).
 
 ---
 
-## 💻 Part 1: Service Configurations (Docker & Docker Compose)
+## 🚀 Step 1: Initial Git Clone & Project Setup
 
-You can launch both the **Todo Application** and **Jenkins CI/CD Server** simultaneously using Docker Compose.
+Execute these commands to pull the repository and install all dependencies:
 
-### 1. Launch Services
-Run this command from the `todo-app` folder:
 ```bash
-docker compose up -d
+# 1. Clone the repository
+git clone https://github.com/Dheeraj-02NK/CNA-Lab-Application.git
+
+# 2. Go to the project folder
+cd CNA-Lab-Application/todo-app
+
+# 3. Setup configurations
+cp .env.example server/.env
+cp .env.example client/.env
+
+# 4. Install all dependencies (server + client)
+npm install
 ```
 
-| Service | Access URL |
-|---|---|
-| **Todo App** | http://localhost:3000 |
-| **Jenkins GUI** | http://localhost:8080 |
+---
 
-### 2. Stop Services
+## 💻 Step 2: Multi-Platform Software Installation
+
+If Git, Node, Docker, Jenkins, or Ngrok are missing, install them using these commands:
+
+### 1. Git
+* **Linux:** `sudo apt update && sudo apt install -y git`
+* **macOS:** `brew install git`
+* **Windows:** `winget install --id Git.Git -e --source winget`
+
+### 2. Node.js (v20 LTS) & npm
+* **Linux:** `curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs`
+* **macOS:** `brew install node@20 && brew link node@20`
+* **Windows:** `winget install -e --id OpenJS.NodeJS.LTS`
+
+### 3. Docker & Docker Compose
+* **Linux:**
+  ```bash
+  sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt update && sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  sudo systemctl enable docker && sudo systemctl start docker
+  ```
+* **macOS:** `brew install --cask docker`
+* **Windows:** `winget install -e --id Docker.DockerDesktop`
+
+### 4. Jenkins
+* **Linux:**
+  ```bash
+  sudo apt update && sudo apt install -y openjdk-21-jre openjdk-21-jdk
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5BA31D57EF5975CA 7198F4B714ABFC68
+  echo "deb https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+  sudo apt update && sudo apt install -y jenkins
+  sudo systemctl enable jenkins && sudo systemctl start jenkins
+  ```
+* **macOS:** `brew install jenkins-lts && brew services start jenkins-lts`
+* **Windows:** `winget install -e --id Jenkins.Jenkins`
+
+### 5. Ngrok
+* **Linux:**
+  ```bash
+  curl -s https://ngrok-agent.s3.amazonaws.com/files/gated/g3-luc/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+  echo "deb https://ngrok-agent.s3.amazonaws.com/files/gated/g3-luc/ default main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+  sudo apt update && sudo apt install ngrok
+  ```
+* **macOS:** `brew install ngrok/ngrok/ngrok`
+* **Windows:** `winget install -e --id ngrok.ngrok`
+
+---
+
+## ⚙️ Step 3: Run Jenkins & Todo App via Docker Compose
+
+Start both services simultaneously:
+```bash
+# Launch services in background
+docker compose up -d
+```
+* **Todo App URL:** http://localhost:3000
+* **Jenkins GUI URL:** http://localhost:8080
+
+**To unlock Jenkins:**
+1. Fetch admin password: `docker logs jenkins-lab`
+2. Open http://localhost:8080, paste password, and click **Install suggested plugins**.
+
+**To stop services:**
 ```bash
 docker compose down
 ```
 
 ---
 
-## ⚙️ Part 2: Jenkins GUI Setup Guide
-
-Follow these steps to configure Jenkins through the web interface after running `docker compose up -d`:
-
-### 1. Retrieve Administrator Password
-To unlock the Jenkins UI, read the secret token generated during startup:
-```bash
-docker logs jenkins-lab
-```
-*(Copy the 32-character alphanumeric code printed in the logs).*
-
-### 2. Unlock Jenkins
-1. Open **http://localhost:8080** in your browser.
-2. Paste the copied administrator password into the **Administrator password** field.
-3. Click **Continue**.
-
-### 4. Create Admin Account
-1. On the customization page, click **Install suggested plugins**.
-2. Create your admin profile once installation finishes.
-
----
-
-## 🧪 Part 3: Experiment Manual & Minimal Execution
-
-### Project Setup
-To begin the lab, clone the project and configure dependencies:
-```bash
-# 1. Clone repository
-git clone https://github.com/Dheeraj-02NK/CNA-Lab-Application.git
-
-# 2. Go to project directory
-cd CNA-Lab-Application/todo-app
-
-# 3. Setup configuration files
-cp .env.example server/.env
-cp .env.example client/.env
-
-# 4. Install all server and client dependencies
-npm install
-```
-
----
+## 🧪 Step 4: DevOps Experiments Manual
 
 ### Experiment 1: Version Control with Git
-
-> 💡 **Note for Students:** Since you cloned this project from GitHub, it is already a Git repository. To practice `git init` from scratch for this experiment, delete the existing configuration folder:
-> ```bash
-> rm -rf .git
-> ```
-
+*(Delete cloned `.git` to practice initialization from scratch)*
 ```bash
-# 1. Initialize local repository
+# 1. Clear cloned Git metadata
+rm -rf .git
+
+# 2. Initialize new Git repository
 git init
 
-# 2. Configure developer identity
+# 3. Setup local name and email
 git config --local user.name "Your Name"
 git config --local user.email "Your Email"
 
-# 3. Check status of untracked files
-git status
-
-# 4. Stage all files for commit
+# 4. Stage and commit files
 git add .
+git commit -m "feat: initial commit"
 
-# 5. Commit the files to local history
-git commit -m "feat: initial commit of RVCE Todo App"
-
-# 6. View the commit log
+# 5. View git logs
 git log --oneline
 ```
 
 ---
 
 ### Experiment 2: Collaborative Development with GitHub
-
-> 💡 **Note for Students:** Replace the URL below with your own personal GitHub repository URL.
-
 ```bash
-# 1. Create main branch
+# 1. Rename default branch
 git branch -M main
 
-# 2. Add remote origin link
+# 2. Map local repository to your remote GitHub profile
 git remote add origin https://github.com/<your-github-username>/CNA-Lab-Application.git
 
-# 3. Push local changes to your remote repository
+# 3. Push code upstream
 git push -u origin main
 
-# 4. Pull changes from remote to verify sync
+# 4. Pull updates
 git pull origin main
 ```
 
 ---
 
 ### Experiment 3: Containerization with Docker & Docker Compose
-
 ```bash
-# 1. Build Docker container image
+# 1. Build Docker image
 docker build -t rvce-todo-app:1.0.0 .
 
 # 2. Run container in background on port 3000
 docker run -d -p 3000:3000 --name todo-container rvce-todo-app:1.0.0
 
-# 3. Stop and remove container
+# 3. Stop and delete container
 docker stop todo-container && docker rm todo-container
 
-# 4. Start using Docker Compose
+# 4. Run using Docker Compose
 docker compose up -d
 
-# 5. Stop using Docker Compose
+# 5. Stop Compose environment
 docker compose down
 ```
 
 ---
 
 ### Experiment 4: CI/CD Pipeline Automation with Jenkins
-
-1. Go to Jenkins UI: **http://localhost:8080**
-2. Click **New Item** -> Name: `rvce-todo-app` -> Select **Pipeline** -> Click **OK**.
-3. Scroll to **Pipeline** section and select:
+1. Open **http://localhost:8080** -> click **New Item** -> enter name -> select **Pipeline** -> **OK**.
+2. Scroll to **Pipeline** section:
    - Definition: **Pipeline script from SCM**
    - SCM: **Git**
    - Repository URL: `https://github.com/Dheeraj-02NK/CNA-Lab-Application.git`
-   - Branch Specifier: `*/main`
+   - Branch: `*/main`
    - Script Path: `todo-app/Jenkinsfile`
-4. Click **Save**.
-5. Click **Build Now** in the left menu, then click the build number to view progress under **Console Output**.
+3. Click **Save** -> **Build Now**.
+4. Check **Console Output** of the run to verify success.
 
 ---
 
 ### Experiment 5: Cloud Deployment on Azure App Service
-
-1. Log in to [Azure Portal](https://portal.azure.com).
-2. Create a Linux **Web App** with Runtime Stack **Node 20 LTS**.
-3. Under **Deployment Center**:
-   - Source: **GitHub**
-   - Repository: `CNA-Lab-Application`, Branch: `main`
-4. In Web App **Configuration** -> Add Application Setting:
-   - Name: `PORT`, Value: `3000`
-5. Under General Settings set **Startup Command**:
+1. Create a Linux **Web App** with Runtime Stack **Node 20 LTS** in the Azure Portal.
+2. In **Deployment Center**, select **GitHub**, authorize, and connect your repository/branch.
+3. In Web App **Configuration** -> Add App Setting: `PORT` = `3000`.
+4. In General Settings set **Startup Command**:
    ```bash
    npm run build && npm start
    ```
@@ -177,48 +189,43 @@ docker compose down
 ---
 
 ### Experiment 7: DevOps Foundational Lifecycle & Workflow
-
+*(Manual execution of stages)*
 ```bash
-# 1. Clear previous outputs
+# 1. Clean workspace
 rm -rf node_modules client/node_modules server/node_modules client/dist
 
-# 2. Run build installation script
+# 2. Code phase: Install dependencies
 npm run install:all
 
-# 3. Compile client code for distribution
+# 3. Build phase: Compile React project
 npm run build
 
-# 4. Run Express production server
+# 4. Release & Operate phase: Start server
 npm start
 ```
 
 ---
 
 ### Experiment 8: DevSecOps (Dependency Scanning)
-
 ```bash
-# Scan Express backend dependencies for vulnerabilities
+# Scan Express server packages
 cd server && npm audit
 
-# Scan React frontend dependencies for vulnerabilities
+# Scan React client packages
 cd ../client && npm audit
 ```
 
 ---
 
 ### Experiment 9: GitHub Webhooks for Automated Jenkins Triggering
-
-1. Start Ngrok tunnel on your local machine:
-   ```bash
-   ngrok http 8080
-   ```
+1. Expose Jenkins: `ngrok http 8080` (copy the secure forwarding URL).
 2. Go to GitHub repo -> **Settings** -> **Webhooks** -> **Add Webhook**.
 3. Set Payload URL to: `https://<ngrok-url-subdomain>/github-webhook/`
-4. Set Content Type to `application/json` -> Click **Add Webhook**.
+4. Set Content Type to `application/json` -> click **Add Webhook**.
 5. Enable **GitHub hook trigger for GITScm polling** in Jenkins job settings.
-6. Push a commit to test automated execution:
+6. Push a commit to verify trigger:
    ```bash
-   git commit --allow-empty -m "trigger: webhooks execution verification"
+   git commit --allow-empty -m "trigger: webhooks test"
    git push origin main
    ```
 
@@ -227,30 +234,21 @@ cd ../client && npm audit
 ## 🔌 API Specifications
 
 ### Health Check
-- **Endpoint:** `GET /api/health`
-- **Output:**
-  ```json
-  {
-    "status": "Running",
-    "application": "RVCE Todo App",
-    "version": "1.0.0"
-  }
-  ```
+`GET /api/health`
+```json
+{
+  "status": "Running",
+  "application": "RVCE Todo App",
+  "version": "1.0.0"
+}
+```
 
 ### Authentication
-- **Endpoint:** `POST /api/login`
-- **Body:**
-  ```json
-  {
-    "rvceId": "RVCE25MIT015",
-    "password": "1234"
-  }
-  ```
-- **Output:**
-  ```json
-  {
-    "success": true,
-    "name": "DHEERAJ N KASHYAP",
-    "rvceId": "RVCE25MIT015"
-  }
-  ```
+`POST /api/login` (Body: `{"rvceId": "RVCE25MIT015", "password": "1234"}`)
+```json
+{
+  "success": true,
+  "name": "DHEERAJ N KASHYAP",
+  "rvceId": "RVCE25MIT015"
+}
+```
