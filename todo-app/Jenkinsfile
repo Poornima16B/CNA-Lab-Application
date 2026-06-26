@@ -1,0 +1,123 @@
+// ═══════════════════════════════════════════════════════════════
+//  RVCE Todo App — Jenkins Declarative Pipeline
+// ═══════════════════════════════════════════════════════════════
+//
+//  How to use:
+//    1. Create a new Pipeline job in Jenkins
+//    2. Under "Pipeline", choose "Pipeline script from SCM"
+//    3. Select "Git" and paste your GitHub repository URL
+//    4. Set the branch (e.g., main)
+//    5. Set Script Path to "Jenkinsfile"
+//    6. Click "Build Now"
+//
+//  No additional plugins are required beyond the defaults.
+// ═══════════════════════════════════════════════════════════════
+
+pipeline {
+    // Run on any available Jenkins agent
+    agent any
+
+    // Environment variables available to all stages
+    environment {
+        APP_NAME    = 'rvce-todo-app'
+        APP_VERSION = '1.0.0'
+        DOCKER_TAG  = "${BUILD_NUMBER}"
+    }
+
+    stages {
+
+        // ── Stage 1: Checkout ──────────────────────────────
+        // Pull the latest code from the Git repository
+        stage('Checkout') {
+            steps {
+                echo '📥 Checking out source code...'
+                checkout scm
+            }
+        }
+
+        // ── Stage 2: Install Dependencies ──────────────────
+        // Install npm packages for both server and client
+        stage('Install Dependencies') {
+            steps {
+                echo '📦 Installing server dependencies...'
+                dir('server') {
+                    sh 'npm install'
+                }
+                echo '📦 Installing client dependencies...'
+                dir('client') {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        // ── Stage 3: Build Application ─────────────────────
+        // Build the React frontend for production
+        stage('Build Application') {
+            steps {
+                echo '🔨 Building React frontend...'
+                dir('client') {
+                    sh 'npm run build'
+                }
+                echo '✅ Frontend build completed!'
+            }
+        }
+
+        // ── Stage 4: Verify Build ──────────────────────────
+        // Confirm that the build output exists
+        stage('Verify Build') {
+            steps {
+                echo '🔍 Verifying build output...'
+                sh 'ls -la client/dist/'
+                sh 'test -f client/dist/index.html && echo "✅ index.html found" || exit 1'
+                echo '✅ Build verification passed!'
+            }
+        }
+
+        // ── Stage 5: Docker Build (Optional) ───────────────
+        // Builds the Docker image if Docker is available
+        // This stage is skipped if Docker is not installed
+        stage('Docker Build') {
+            when {
+                expression {
+                    return sh(script: 'which docker', returnStatus: true) == 0
+                }
+            }
+            steps {
+                echo '🐳 Building Docker image...'
+                sh "docker build -t ${APP_NAME}:${DOCKER_TAG} ."
+                sh "docker tag ${APP_NAME}:${DOCKER_TAG} ${APP_NAME}:latest"
+                echo "✅ Docker image built: ${APP_NAME}:${DOCKER_TAG}"
+            }
+        }
+
+        // ── Stage 6: Success ───────────────────────────────
+        stage('Pipeline Complete') {
+            steps {
+                echo '═══════════════════════════════════════════'
+                echo "🎉 ${APP_NAME} v${APP_VERSION} — Build #${BUILD_NUMBER} Successful!"
+                echo '═══════════════════════════════════════════'
+                echo ''
+                echo '📋 Summary:'
+                echo "   Application: ${APP_NAME}"
+                echo "   Version:     ${APP_VERSION}"
+                echo "   Build:       #${BUILD_NUMBER}"
+                echo "   Docker Tag:  ${DOCKER_TAG}"
+                echo ''
+                echo '🚀 Ready for deployment!'
+            }
+        }
+    }
+
+    // ── Post-Build Actions ──────────────────────────────────
+    post {
+        success {
+            echo '✅ Pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Pipeline failed. Please check the logs above.'
+        }
+        always {
+            echo "📊 Build #${BUILD_NUMBER} finished at ${new Date()}"
+        }
+    }
+}
