@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  # ── Jenkins LTS Service ────────────────────────────────────
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins-lab
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    restart: unless-stopped
+
+  # ── Ngrok Service (Optional, config via command) ───────────
+  # To run ngrok, you will need to set your authtoken.
+  # Command to run ngrok container manually:
+  # docker run -d --net=host -e NGROK_AUTHTOKEN=<token> ngrok/ngrok http 8080
+  
+volumes:
+  jenkins_home:
