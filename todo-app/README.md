@@ -222,17 +222,42 @@ cd ../client && npm audit
 
 ---
 
-### Experiment 9: GitHub Webhooks for Automated Jenkins Triggering
-1. Expose Jenkins: `ngrok http 8080` (copy the secure forwarding URL).
-2. Go to GitHub repo -> **Settings** -> **Webhooks** -> **Add Webhook**.
-3. Set Payload URL to: `https://<ngrok-url-subdomain>/github-webhook/`
-4. Set Content Type to `application/json` -> click **Add Webhook**.
-5. Enable **GitHub hook trigger for GITScm polling** in Jenkins job settings.
-6. Push a commit to verify trigger:
-   ```bash
-   git commit --allow-empty -m "trigger: webhooks test"
-   git push origin main
-   ```
+### Experiment 9: GitHub Webhooks
+
+**Procedure**
+
+**Step 1**
+1. Open [Svix Play](https://play.svix.com/).
+2. Generate a new webhook endpoint.
+3. Copy the generated Webhook URL.
+   *Example:* `https://play.svix.com/in/e_xxxxxxxxxxxxxxxxxxxxxxxxx`
+   *(Use your own generated URL)*
+
+**Step 2**
+1. Open your GitHub repository.
+2. Navigate to: `Settings` → `Webhooks` → `Add Webhook`
+
+**Step 3**
+Configure the webhook:
+* **Payload URL:** `<Paste your Svix Play Webhook URL>`
+* **Content Type:** `application/json`
+* **Secret:** *(Leave Empty)*
+* **SSL Verification:** `Enable SSL Verification`
+* **Events:** `Just the push event`
+* Click **Add Webhook**.
+
+**Step 4**
+Make a small change to your repository.
+```bash
+git add .
+git commit -m "Webhook Test"
+git push origin main
+```
+
+**Step 5**
+1. Return to Svix Play.
+2. Refresh the page.
+3. Observe the incoming webhook request to verify that GitHub has delivered the Push event successfully.
 
 ---
 
