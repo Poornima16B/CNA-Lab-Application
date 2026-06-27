@@ -15,9 +15,13 @@ git clone https://github.com/Dheeraj-02NK/CNA-Lab-Application.git
 # 2. Go to the project folder
 cd CNA-Lab-Application/todo-app
 
-# 3. Setup configurations
+# 3. Setup configurations (Linux / macOS)
 cp .env.example server/.env
 cp .env.example client/.env
+
+# 3. Setup configurations (Windows)
+copy .env.example server\.env
+copy .env.example client\.env
 
 # 4. Install all dependencies (server + client)
 npm install
@@ -102,8 +106,11 @@ docker compose down
 ### Experiment 1: Version Control with Git
 *(Delete cloned `.git` to practice initialization from scratch)*
 ```bash
-# 1. Clear cloned Git metadata
+# 1. Clear cloned Git metadata (Linux / macOS)
 rm -rf .git
+
+# 1. Clear cloned Git metadata (Windows)
+rmdir /s /q .git
 
 # 2. Initialize new Git repository
 git init
@@ -148,7 +155,8 @@ docker build -t rvce-todo-app:1.0.0 .
 docker run -d -p 3000:3000 --name todo-container rvce-todo-app:1.0.0
 
 # 3. Stop and delete container
-docker stop todo-container && docker rm todo-container
+docker stop todo-container
+docker rm todo-container
 
 # 4. Run using Docker Compose
 docker compose up -d
@@ -196,8 +204,11 @@ docker compose down
 ### Experiment 7: DevOps Foundational Lifecycle & Workflow
 *(Manual execution of stages)*
 ```bash
-# 1. Clean workspace
+# 1. Clean workspace (Linux / macOS)
 rm -rf node_modules client/node_modules server/node_modules client/dist
+
+# 1. Clean workspace (Windows)
+rmdir /s /q node_modules client\node_modules server\node_modules client\dist
 
 # 2. Code phase: Install dependencies
 npm run install:all
@@ -214,10 +225,12 @@ npm start
 ### Experiment 8: DevSecOps (Dependency Scanning)
 ```bash
 # Scan Express server packages
-cd server && npm audit
+cd server
+npm audit
 
 # Scan React client packages
-cd ../client && npm audit
+cd ../client
+npm audit
 ```
 
 ---
