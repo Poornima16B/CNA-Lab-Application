@@ -22,9 +22,7 @@ pipeline {
                 checkout scm
                 
                 echo '📋 Repository Information:'
-                sh 'echo "Current Directory: $(pwd)"'
-                sh 'echo "Current Branch: $(git branch --show-current || git rev-parse --abbrev-ref HEAD)"'
-                sh 'echo "Latest Commit Hash: $(git rev-parse HEAD)"'
+                echo "Workspace: ${WORKSPACE}"
             }
         }
 
@@ -34,20 +32,35 @@ pipeline {
             steps {
                 echo '🔍 Checking repository structure...'
                 
-                sh '''
-                    # Verify core application directories and files
-                    test -d todo-app || { echo "❌ Directory todo-app missing"; exit 1; }
-                    test -d todo-app/client || { echo "❌ Directory todo-app/client missing"; exit 1; }
-                    test -d todo-app/server || { echo "❌ Directory todo-app/server missing"; exit 1; }
+                script {
+                    def requiredFiles = [
+                        'todo-app/package.json',
+                        'todo-app/Dockerfile',
+                        'todo-app/docker-compose.yml',
+                        'todo-app/README.md',
+                        'todo-app/Jenkinsfile'
+                    ]
                     
-                    test -f todo-app/package.json || { echo "❌ package.json missing"; exit 1; }
-                    test -f todo-app/Dockerfile || { echo "❌ Dockerfile missing"; exit 1; }
-                    test -f todo-app/docker-compose.yml || { echo "❌ docker-compose.yml missing"; exit 1; }
-                    test -f todo-app/README.md || { echo "❌ README.md missing"; exit 1; }
-                    test -f todo-app/Jenkinsfile || { echo "❌ Jenkinsfile missing"; exit 1; }
+                    for (file in requiredFiles) {
+                        if (!fileExists(file)) {
+                            error("❌ Missing required file: ${file}")
+                        }
+                    }
+                    
+                    def requiredDirs = [
+                        'todo-app',
+                        'todo-app/client',
+                        'todo-app/server'
+                    ]
+                    
+                    for (dir in requiredDirs) {
+                        if (!fileExists(dir)) {
+                            error("❌ Missing required directory: ${dir}")
+                        }
+                    }
                     
                     echo "✅ All required DevOps laboratory files verified successfully."
-                '''
+                }
             }
         }
 
@@ -57,12 +70,24 @@ pipeline {
             steps {
                 echo '📦 Installing Server Dependencies...'
                 dir('todo-app/server') {
-                    sh 'npm install'
+                    script {
+                        if (isUnix()) {
+                            sh 'npm install'
+                        } else {
+                            bat 'npm install'
+                        }
+                    }
                 }
 
                 echo '📦 Installing Client Dependencies...'
                 dir('todo-app/client') {
-                    sh 'npm install'
+                    script {
+                        if (isUnix()) {
+                            sh 'npm install'
+                        } else {
+                            bat 'npm install'
+                        }
+                    }
                 }
             }
         }
@@ -72,9 +97,17 @@ pipeline {
         stage('Verify Application') {
             steps {
                 echo '⚙️  System Runtime Information:'
-                sh 'echo "Node Version: $(node -v || echo Not Found)"'
-                sh 'echo "NPM Version: $(npm -v || echo Not Found)"'
-                sh 'echo "Git Version: $(git --version || echo Not Found)"'
+                script {
+                    if (isUnix()) {
+                        sh 'node -v || echo Node Not Found'
+                        sh 'npm -v || echo NPM Not Found'
+                        sh 'git --version || echo Git Not Found'
+                    } else {
+                        bat 'node -v || echo Node Not Found'
+                        bat 'npm -v || echo NPM Not Found'
+                        bat 'git --version || echo Git Not Found'
+                    }
+                }
                 
                 echo ''
                 echo 'Repository Verified Successfully'
