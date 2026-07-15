@@ -87,14 +87,8 @@ app.post("/api/login", (req, res) => {
 });
 
 // ─── Serve React Frontend (Production) ─────────────────────
-// In production, the built React app (client/dist) is served
-// as static files. Any route that doesn't match an API endpoint
-// falls through to index.html for React Router to handle.
-const clientDistPath = path.join(__dirname, "..", "client", "dist");
-app.use(express.static(clientDistPath));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(clientDistPath, "index.html"));
-});
+// The React frontend is now hosted separately on Netlify.
+// This API server only serves the /api/* routes.
 
 // ─── Start Server ───────────────────────────────────────────
 app.listen(PORT, () => {
