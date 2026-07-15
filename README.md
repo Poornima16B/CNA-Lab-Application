@@ -274,6 +274,186 @@ git push origin main
 
 ---
 
+## 🚀 Step 5: Cloud Deployment (Experiments 10–18)
+
+---
+
+### Experiment 10: Prepare Repository for Cloud Deployment
+
+Before deploying, ensure your repository structure is correct (files at the root level, not nested inside a subfolder).
+
+```bash
+# Verify your structure looks like this:
+# CNA-Lab-Application/
+# ├── client/       ← React frontend
+# ├── server/       ← Node.js backend
+# ├── Dockerfile
+# ├── Jenkinsfile
+# ├── docker-compose.yml
+# └── README.md
+
+git log --oneline -5
+```
+
+---
+
+### Experiment 11: Deploy Backend API on Render
+
+**Procedure**
+1. Open [https://render.com](https://render.com) and sign in / create a free account.
+2. Click **+ New** → **Web Service**.
+3. Connect your GitHub account and select the `CNA-Lab-Application` repository.
+4. Fill in the configuration fields:
+   * **Name:** `CNA-Lab-Application`
+   * **Language:** `Node`
+   * **Branch:** `main`
+   * **Root Directory:** `server`
+   * **Build Command:** `npm install`
+   * **Start Command:** `npm start`
+   * **Instance Type:** `Free`
+5. Click **Create Web Service**.
+6. Wait 2–3 minutes for the build to complete.
+7. Copy the URL shown at the top (e.g., `https://cna-lab-application.onrender.com`).
+
+**Verify the backend is live:**
+Open your browser and visit:
+```
+https://cna-lab-application.onrender.com/api/health
+```
+Expected response:
+```json
+{ "status": "Running", "application": "RVCE Todo App", "version": "1.0.0" }
+```
+
+---
+
+### Experiment 12: Deploy Frontend on Netlify
+
+**Procedure**
+1. Open [https://netlify.com](https://netlify.com) and sign in / create a free account.
+2. Click **Add new site** → **Import an existing project**.
+3. Select **GitHub** as the Git provider and authorize Netlify.
+4. Choose the `CNA-Lab-Application` repository.
+5. Fill in the **Build settings**:
+   * **Branch to deploy:** `main`
+   * **Base directory:** `client`
+   * **Build command:** `npm run build`
+   * **Publish directory:** `client/dist`
+   * **Functions directory:** *(leave empty)*
+6. Expand **Environment variables** → Click **Add key/value pairs**:
+   * **Key:** `VITE_API_URL`
+   * **Value:** `https://cna-lab-application.onrender.com` *(your Render URL)*
+7. Click **Deploy site**.
+8. Wait 2–3 minutes for the build to complete.
+9. Copy the Netlify URL (e.g., `https://cna-lab-todo.netlify.app`).
+
+---
+
+### Experiment 13: Verify Full Stack Application
+
+Open your Netlify URL in the browser and verify the entire application works end-to-end.
+
+**Login credentials:**
+* **RVCE ID:** `RVCE25MIT015`
+* **Password:** `1234`
+
+**Checklist:**
+- [ ] Login page loads on Netlify URL
+- [ ] Sign In button connects to Render backend
+- [ ] Dashboard loads after successful login
+- [ ] Tasks can be created, edited, and deleted
+
+---
+
+### Experiment 14: Configure Continuous Deployment (Netlify)
+
+Netlify automatically redeploys every time you push to GitHub. Verify this:
+
+```bash
+# Make a small change
+echo "# Deploy test" >> README.md
+
+# Push to GitHub
+git add .
+git commit -m "test: trigger netlify auto-deploy"
+git push origin main
+```
+
+1. Go to your **Netlify Dashboard** → **Deploys**.
+2. You will see a new deploy triggered automatically within seconds.
+3. Wait for it to show **Published** status.
+
+---
+
+### Experiment 15: Configure Continuous Deployment (Render)
+
+Render also auto-deploys on every push. Verify this:
+
+1. After pushing in Experiment 14, go to your **Render Dashboard** → **Events**.
+2. You will see a new deploy triggered automatically.
+3. Wait for it to show **Live** status.
+
+---
+
+### Experiment 16: Environment Variables & Configuration Management
+
+**Procedure — Update the backend API URL on Netlify:**
+1. Go to **Netlify Dashboard** → **Site Configuration** → **Environment Variables**.
+2. Click **Add a variable** or edit `VITE_API_URL`.
+3. Change the value to a new URL (e.g., if you re-deploy your backend).
+4. Go to **Deploys** → Click **Trigger deploy** → **Deploy site** to apply the new variable.
+
+**Procedure — Add environment variables on Render:**
+1. Go to **Render Dashboard** → **Environment**.
+2. Click **Add Environment Variable**.
+3. Add any required secrets (e.g., `NODE_ENV=production`).
+4. Render automatically restarts the service when variables are saved.
+
+---
+
+### Experiment 17: Monitor Logs & Application Health
+
+**Render (Backend) Logs:**
+1. Go to **Render Dashboard** → **Logs**.
+2. Observe real-time server logs.
+3. Visit `https://<your-render-url>/api/health` to check the health endpoint.
+
+**Netlify (Frontend) Logs:**
+1. Go to **Netlify Dashboard** → **Deploys**.
+2. Click on any deploy to view its **build log**.
+3. Verify the build completed successfully with no errors.
+
+---
+
+### Experiment 18: Full DevOps Lifecycle Summary
+
+This experiment demonstrates the complete DevOps pipeline from code to cloud.
+
+| Stage | Tool | Action |
+|-------|------|--------|
+| **Plan** | GitHub Issues | Track features and bugs |
+| **Code** | VS Code + Git | Write and commit code |
+| **Build** | Netlify / Render | Auto-build on push |
+| **Test** | npm audit | Scan for vulnerabilities |
+| **Release** | GitHub | Tag a release version |
+| **Deploy** | Netlify + Render | Auto-deploy to cloud |
+| **Operate** | Render Dashboard | Monitor logs and uptime |
+| **Monitor** | Health API | Verify service health |
+
+**Final verification commands:**
+```bash
+# Check git history
+git log --oneline
+
+# Verify remote is connected
+git remote -v
+
+# Check all files are tracked
+git status
+```
+
+---
+
 ## 🔌 API Specifications
 
 ### Health Check
