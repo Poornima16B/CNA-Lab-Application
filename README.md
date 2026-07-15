@@ -278,7 +278,7 @@ git push origin main
 
 ---
 
-### Experiment 10: Prepare Repository for Cloud Deployment
+### Prepare Repository for Cloud Deployment
 
 Before deploying, ensure your repository structure is correct (files at the root level, not nested inside a subfolder).
 
@@ -297,7 +297,7 @@ git log --oneline -5
 
 ---
 
-### Experiment 11: Deploy Backend API on Render
+### Deploy Backend API on Render
 
 **Procedure**
 1. Open [https://render.com](https://render.com) and sign in / create a free account.
@@ -327,7 +327,7 @@ Expected response:
 
 ---
 
-### Experiment 12: Deploy Frontend on Netlify
+### Deploy Frontend on Netlify
 
 **Procedure**
 1. Open [https://netlify.com](https://netlify.com) and sign in / create a free account.
@@ -349,7 +349,7 @@ Expected response:
 
 ---
 
-### Experiment 13: Verify Full Stack Application
+### Verify Full Stack Application
 
 Open your Netlify URL in the browser and verify the entire application works end-to-end.
 
@@ -365,7 +365,7 @@ Open your Netlify URL in the browser and verify the entire application works end
 
 ---
 
-### Experiment 14: Configure Continuous Deployment (Netlify)
+### Configure Continuous Deployment (Netlify)
 
 Netlify automatically redeploys every time you push to GitHub. Verify this:
 
@@ -385,7 +385,7 @@ git push origin main
 
 ---
 
-### Experiment 15: Configure Continuous Deployment (Render)
+### Configure Continuous Deployment (Render)
 
 Render also auto-deploys on every push. Verify this:
 
@@ -395,7 +395,7 @@ Render also auto-deploys on every push. Verify this:
 
 ---
 
-### Experiment 16: Environment Variables & Configuration Management
+### Environment Variables & Configuration Management
 
 **Procedure — Update the backend API URL on Netlify:**
 1. Go to **Netlify Dashboard** → **Site Configuration** → **Environment Variables**.
@@ -411,7 +411,7 @@ Render also auto-deploys on every push. Verify this:
 
 ---
 
-### Experiment 17: Monitor Logs & Application Health
+### Monitor Logs & Application Health
 
 **Render (Backend) Logs:**
 1. Go to **Render Dashboard** → **Logs**.
@@ -425,7 +425,7 @@ Render also auto-deploys on every push. Verify this:
 
 ---
 
-### Experiment 18: Full DevOps Lifecycle Summary
+### Full DevOps Lifecycle Summary
 
 This experiment demonstrates the complete DevOps pipeline from code to cloud.
 
