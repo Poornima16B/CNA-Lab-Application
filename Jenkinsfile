@@ -34,11 +34,11 @@ pipeline {
                 
                 script {
                     def requiredFiles = [
-                        'todo-app/package.json',
-                        'todo-app/Dockerfile',
-                        'todo-app/docker-compose.yml',
-                        'todo-app/README.md',
-                        'todo-app/Jenkinsfile'
+                        'package.json',
+                        'Dockerfile',
+                        'docker-compose.yml',
+                        'README.md',
+                        'Jenkinsfile'
                     ]
                     
                     for (file in requiredFiles) {
@@ -48,9 +48,8 @@ pipeline {
                     }
                     
                     def requiredDirs = [
-                        'todo-app',
-                        'todo-app/client',
-                        'todo-app/server'
+                        'client',
+                        'server'
                     ]
                     
                     for (dir in requiredDirs) {
@@ -69,7 +68,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo '📦 Installing Server Dependencies...'
-                dir('todo-app/server') {
+                dir('server') {
                     script {
                         if (isUnix()) {
                             sh 'npm install'
@@ -80,7 +79,7 @@ pipeline {
                 }
 
                 echo '📦 Installing Client Dependencies...'
-                dir('todo-app/client') {
+                dir('client') {
                     script {
                         if (isUnix()) {
                             sh 'npm install'

@@ -13,7 +13,7 @@ Execute these commands to pull the repository and install all dependencies:
 git clone https://github.com/Dheeraj-02NK/CNA-Lab-Application.git
 
 # 2. Go to the project folder
-cd CNA-Lab-Application/todo-app
+cd CNA-Lab-Application
 
 # 3. Setup configurations (Linux / macOS)
 cp .env.example server/.env
@@ -179,7 +179,7 @@ docker compose down
    - SCM → **Git**
    - Repository URL → `https://github.com/Dheeraj-02NK/CNA-Lab-Application.git`
    - Branch → `*/main`
-   - Script Path → `todo-app/Jenkinsfile`
+   - Script Path → `Jenkinsfile`
 6. Click **Save**.
 7. Click **Build Now**.
 8. Open **Console Output** to verify the laboratory demonstration pipeline.
