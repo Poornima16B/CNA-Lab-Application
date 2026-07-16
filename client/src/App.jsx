@@ -1,3 +1,4 @@
+// v1.0.1 - 2026-07-16
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "./context/AuthContext";
