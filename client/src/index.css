@@ -8,13 +8,13 @@
 /* ─── CSS Custom Properties ─── */
 :root {
   /* Brand */
-  --primary: #4f46e5;
-  --primary-light: #6366f1;
-  --primary-dark: #4338ca;
-  --primary-glow: rgba(79, 70, 229, 0.35);
-  --accent: #06b6d4;
-  --accent-light: #22d3ee;
-  --accent-glow: rgba(6, 182, 212, 0.3);
+  --primary: #1a3a6b;
+  --primary-light: #2251a3;
+  --primary-dark: #0f2347;
+  --primary-glow: rgba(26, 58, 107, 0.40);
+  --accent: #4a9eda;
+  --accent-light: #72bce8;
+  --accent-glow: rgba(74, 158, 218, 0.35);
 
   /* Status */
   --success: #10b981;

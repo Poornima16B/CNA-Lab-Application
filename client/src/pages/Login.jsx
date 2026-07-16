@@ -104,7 +104,7 @@ export default function Login() {
             </div>
           </div>
           <p className="branding-footer">
-            RV College of Engineering © 2025
+            RV College of Engineering © 2026
           </p>
         </div>
 
